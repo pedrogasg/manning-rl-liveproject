@@ -1,16 +1,20 @@
 import numpy as np 
-
+from agents import BaseAgent
 actionSpace = {'U': (-1,0), 'D': (1,0), 'L': (0,-1), 'R': (0,1)}
 
-class Agent(object):
-    def __init__(self, maze, alpha=0.15, randomFactor=0.2):        
-        self.stateHistory = [((0,0), 0)]   
-        self.G = {}  # present value of expected future rewards
+class MazeAgent(BaseAgent):
+    def __init__(self, maze, alpha=0.15, randomFactor=0.2):
+        self.maze = maze
+        super(MazeAgent, self).__init__()        
+        
+        self.memory.append(((0,0), 0))
+
         self.randomFactor = randomFactor
         self.alpha = alpha   
-        self.initReward(maze.allowedStates)  
 
-    def chooseAction(self, state, allowedMoves):           
+
+    def chooseAction(self, state):
+        allowedMoves =  self.maze.allowedStates[state]           
         maxG = -10e15    
         nextMove = None 
         randomN = np.random.random()
@@ -24,7 +28,7 @@ class Agent(object):
                     nextMove = action            
         return nextMove
 
-    def printG(self):
+    def print(self):
         for i in range(6):            
             for j in range(6):
                 if (i,j) in self.G.keys():
@@ -33,19 +37,17 @@ class Agent(object):
                     print('X', end='\t\t')
             print('\n')
 
-    def updateStateHistory(self, state, reward):
-        self.stateHistory.append((state, reward))
-
-    def initReward(self, allowedStates):
-        for state in allowedStates:     
+    def initVariables(self):
+        self.G = {}  # present value of expected future rewards
+        for state in self.maze.allowedStates:     
             self.G[state] = np.random.uniform(low=-1.0, high=-0.1)
 
-    def learn(self):
+    def update(self):
         target = 0 # we only learn when we beat the maze
 
-        for prev, reward in reversed(self.stateHistory):                    
+        for prev, reward in reversed(self.memory):                    
             self.G[prev] = self.G[prev] + self.alpha * (target - self.G[prev])            
             target += reward
 
-        self.stateHistory = []
+        self.memory = []
         self.randomFactor -= 10e-5

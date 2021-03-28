@@ -1,6 +1,6 @@
 import numpy as np
 from environments import Maze
-from agents import Agent
+from agents import MazeAgent
 import matplotlib.pyplot as plt
 
 from experiments import Experiment 
@@ -9,38 +9,38 @@ class MazeExperiment(Experiment):
 
     def run(self):
         maze = Maze()
-        robot = Agent(maze, alpha=0.1, randomFactor=0.25)
+        robot = MazeAgent(maze, alpha=0.1, randomFactor=0.25)
         moveHistory = []
         for i in range(5000):
             if i % 1000 == 0:
                 print(i)
             while not maze.isGameOver():
                 state, _ = maze.getStateAndReward()
-                action = robot.chooseAction(state, maze.allowedStates[state])
+                action = robot.chooseAction(state)
                 maze.updateMaze(action)
                 state, reward = maze.getStateAndReward()
-                robot.updateStateHistory(state, reward)
+                robot.updateMemory(state, reward)
                 if maze.steps > 1000:
                     maze.robotPosition = (5,5)
-            robot.learn()
+            robot.update()
             moveHistory.append(maze.steps)
             maze = Maze()
 
         maze = Maze()
-        robot = Agent(maze, alpha=0.5, randomFactor=0.25)
+        robot = MazeAgent(maze, alpha=0.5, randomFactor=0.25)
         moveHistory2 = []
         for i in range(5000):
             if i % 1000 == 0:
                 print(i)
             while not maze.isGameOver():
                 state, _ = maze.getStateAndReward()
-                action = robot.chooseAction(state, maze.allowedStates[state])
+                action = robot.chooseAction(state)
                 maze.updateMaze(action)
                 state, reward = maze.getStateAndReward()
-                robot.updateStateHistory(state, reward)
+                robot.updateMemory(state, reward)
                 if maze.steps > 1000:
                     maze.robotPosition = (5,5)            
-            robot.learn()
+            robot.update()
             moveHistory2.append(maze.steps)
             maze = Maze()
 
