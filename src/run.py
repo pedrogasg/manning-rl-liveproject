@@ -1,5 +1,5 @@
-from experiments import MazeExperiment, BanditExperiment, FrozenExperiment
+from experiments import MazeExperiment, BanditExperiment, FrozenExperiment, GridWordlExperiment, WindyWorldExperiment
 
 if __name__ == '__main__':
-    x = FrozenExperiment()
+    x = WindyWorldExperiment()
     x.run()
