@@ -5,4 +5,5 @@ from .frozen_experiment import FrozenExperiment
 from .grid_world_experiment import GridWordlExperiment
 from .windy_world_experiment import WindyWorldExperiment
 from .car_pole import CarPoleExperiment
-from .car_pole_sarsa import CarPoleSarsaExperiment
+from .mountain_car_experiment import MountainCarExperiment
+from .final_experiment import FinalExperiment
